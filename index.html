@@ -392,7 +392,7 @@ document.getElementById("languages").addEventListener("change", function (e) {
 });
 
 async function init(tl="", sl="") {
-  document.getElementById("languages").value = tl;  ///配合初始化的追加
+  ///document.getElementById("languages").value = tl;  ///配合初始化的追加
   const intermediate = "en";
   const target = tl || document.getElementById("languages").value;
   const source = sl || "auto" || navigator.language;
