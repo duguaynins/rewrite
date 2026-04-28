@@ -325,11 +325,11 @@ async function init(tl="", sl="") {
   document.getElementById("intermediate").innerText = "format(il): "+intermediate;  ///field
   document.getElementById("source").innerText = "source(sl): "+source;
   document.getElementById("target").innerText = "target(tl): "+target;
-}init("en", "");  ///配合初始化的追加
+}///init("en", "");  ///配合初始化的追加
 
 async function send() {
   init();
-  const intermediate = "en";
+  const intermediate = "en";  ///en, de
   const target = document.getElementById("languages").value;
   const source = navigator.language;
   const strings = `{
@@ -337,9 +337,12 @@ async function send() {
 "${source}_disambiguated":  ___,
 "${target}": ___,
 "${target}_disambiguated": ___,
-"en": ___,
-"en_disambiguated": ___,} 
+"${intermediate}": ___,
+"${intermediate}_disambiguated": ___,} 
 `;
+  ///did you have a good day today?
+  console.log(strings);
+
   ///document.getElementById("input_msg").disabled = true;  ///20260427
   const sys = document.getElementById("input_sys").value;
   ///const usr = document.getElementById("input_msg").value;
@@ -457,7 +460,10 @@ const observer = new MutationObserver(() => {
     target.insertBefore(option, target.firstChild);
     ///target.appendChild(option);  
 
-    target.value = "en";  ///自動選擇語言
+    ///did you have a good day today?
+    const defaults = "en";  ///en, de
+    target.value = defaults;  ///自動選擇語言
+    init(defaults);
 });
 
 observer.observe(document.body, {
