@@ -402,6 +402,7 @@ async function init(tl="", sl="") {
 }init("en", "");  ///配合初始化的追加
 
 async function send() {
+  init();
   const intermediate = "en";
   const target = document.getElementById("languages").value;
   const source = navigator.language;
