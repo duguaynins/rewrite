@@ -280,10 +280,10 @@ async function rewrite(params) {
   console.log('頻道確認:', params);
   const { system, user, models } = params;
   if (!models) { return; }
-  if (!user) { return "sys?"; }
-  if (!system) { return "usr?"; }
+  if (!user) { return "usr?"; }
+  if (!system) { return "sys?"; }
 
-  const inputs = { "inputs": { "system": system, "user": user, "user": user, "models": models  } };
+  const inputs = { "inputs": { "system": system, "user": user, "models": models  } };
   const outputs = await HuggingFaceAPI({
     group: "duguaynins",
     space: "Server",
@@ -319,9 +319,9 @@ document.getElementById("languages").addEventListener("change", function (e) {
   init(tl_buf, "");  ///20260428
 });
 
-async function init(tl="", sl="") {
+async function init(tl="", sl="", il="") {
   ///document.getElementById("languages").value = tl;  ///配合初始化的追加
-  const intermediate = "en";
+  const intermediate = il || "en";
   const target = tl || document.getElementById("languages").value;
   const source = sl || "auto" || navigator.language;
   document.getElementById("intermediate").innerText = "format(il): "+intermediate;  ///field
@@ -330,7 +330,14 @@ async function init(tl="", sl="") {
 }///init("en", "");  ///配合初始化的追加
 
 async function send() {
-  init();
+  ///init();
+  ///init("", "", "");
+  setTimeout(() => {
+    init("...", "...", "...");
+  }, 1);
+  setTimeout(() => {
+    init();
+  }, 1000);
   const intermediate = "en";  ///en, de
   const target = document.getElementById("languages").value;
   const source = navigator.language;
@@ -348,7 +355,7 @@ async function send() {
   ///document.getElementById("input_msg").disabled = true;  ///20260427
   const sys = document.getElementById("input_sys").value;
   ///const usr = document.getElementById("input_msg").value;
-  const usr = document.getElementById("input_msg").innerText;  ///textContent：純原始文字（效能較好）
+  const usr = document.getElementById("input_msg").innerText.trim();  ///textContent：純原始文字（效能較好）  ///追加.trim();
   ///document.getElementById("input_msg").value = "";
   log("🧠　" + usr);  ///🧠✨💡
   ///{ "text": xmsg, "source": null, "target": {tl:tlang, il:ilang} }
@@ -358,6 +365,9 @@ async function send() {
   
   ///log("🤖　" + await generate({ "sys": sys, "usr": usr, "models": 'gpt-4o-mini' }) );
   ///log("🤖＋" + await generate({ "sys": sys, "usr": usr, "models": 'gpt-4o' }) );
+
+  
+  
   const gpt_4o_mini = await rewrite({ "system": strings, "user": usr, "models": 'gpt-4o-mini' });
   log("🤖　" + gpt_4o_mini );
   const data = JSON.parse(gpt_4o_mini);
