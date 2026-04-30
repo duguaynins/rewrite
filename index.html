@@ -7,6 +7,7 @@
   <meta name="description" content="© 2024 NINS (by JPGT). By using any of the services, it means you have agreed to any content and all content!" />
   <link rel="canonical" href="https://copyright.nins.cc/" />
   <title translate="no">nins / rewrite.sys</title>
+  <meta name="google" content="notranslate">
 
   <style>
     :root {
@@ -342,12 +343,12 @@ async function send() {
   const target = document.getElementById("languages").value;
   const source = navigator.language;
   const strings = `{
+"${intermediate}": ___,
+"${intermediate}_disambiguated": ___,
 "${source}":  ___,
 "${source}_disambiguated":  ___,
 "${target}": ___,
-"${target}_disambiguated": ___,
-"${intermediate}": ___,
-"${intermediate}_disambiguated": ___,} 
+"${target}_disambiguated": ___,} 
 `;
   ///did you have a good day today?
   console.log(strings);
@@ -365,7 +366,14 @@ async function send() {
   
   ///log("🤖　" + await generate({ "sys": sys, "usr": usr, "models": 'gpt-4o-mini' }) );
   ///log("🤖＋" + await generate({ "sys": sys, "usr": usr, "models": 'gpt-4o' }) );
-
+  
+  setTimeout(() => {
+    init("...", "...", "...");
+  }, 1);
+  setTimeout(() => {
+    init();
+    if (!usr) { document.getElementById("input_msg").focus(); }
+  }, 1000);
   
   
   const gpt_4o_mini = await rewrite({ "system": strings, "user": usr, "models": 'gpt-4o-mini' });
