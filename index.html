@@ -192,6 +192,7 @@
       <div id="source" contenteditable="false" class="text-input editor" style="background: #eee;"></div><br>
       <div id="target" contenteditable="false" class="text-input editor" style="background: #eee;"></div><br>
       <div id="intermediate" contenteditable="false" class="text-input editor" style="background: #eee;"></div><br>
+      <div id="scores"></div>
     </div>
 
     <div class="dos-block" style="display: none;">
@@ -328,6 +329,7 @@ async function init(tl="", sl="", il="") {
   document.getElementById("intermediate").innerText = "format(il): "+intermediate;  ///field
   document.getElementById("source").innerText = "source(sl): "+source;
   document.getElementById("target").innerText = "target(tl): "+target;
+  document.getElementById("scores").innerText = "";
 }///init("en", "");  ///配合初始化的追加
 
 async function send() {
@@ -383,6 +385,7 @@ async function send() {
   document.getElementById("intermediate").innerText = data[intermediate+"_disambiguated"];  ///field
   document.getElementById("source").innerText = data[source+"_disambiguated"];
   document.getElementById("target").innerText = data[target+"_disambiguated"];
+  document.getElementById("scores").innerText = JSON.stringify(data["labse"]);
 
   ///document.getElementById("input_msg").value = "";  ///20260427
   ///document.getElementById("input_msg").disabled = false;  ///20260427
