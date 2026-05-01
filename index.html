@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -163,6 +161,27 @@
       color: #000 !important;
       border: 1px solid #000 !important;
     }
+    
+    .text {
+      white-space: nowrap;
+      display: inline-block;
+      /* padding: 12px; */
+      font-size: 12px;
+      color: #1d1d1f;
+      transition: transform 0.1s ease-out; /* 增加一點平滑感 */
+      will-change: transform;
+    }
+    .text:empty {
+      display: none;
+    }
+    .wrapper {
+      width: 100%;
+      overflow: hidden;
+      /* border: 1px solid #d2d2d7; */
+      /* border-radius: 8px; */
+      background: #fafafa;
+      position: relative;
+    }
   </style>
   <script src="https://copyright.nins.cc/children/0001/nins-cookie.js"></script>
   <script src="https://copyright.nins.cc/children/0001/nins-huggingface.js"></script>
@@ -188,12 +207,16 @@
         <select id="languages" class="btn" translate="yes"></select>
       </div><br>
       <div id="input_msg" contenteditable="true" class="text-input editor"></div><br>
-      <button class="btn" id="input_msgbtn" onclick="send()">[ F1 ] REWRITE</button><br><br><br>
+      <button class="btn" id="input_msgbtn" onclick="send()">[ F1 ] REWRITE</button>
+      <div id="scores" class="text wrapper"></div><br><br><br>
 
-      <div id="source" contenteditable="false" class="text-input editor" style="background: #eee;"></div><br>
-      <div id="target" contenteditable="false" class="text-input editor" style="background: #eee;"></div><br>
-      <div id="intermediate" contenteditable="false" class="text-input editor" style="background: #eee;"></div><br>
-      <div id="scores"></div>
+      <div id="source" contenteditable="false" class="text-input editor" style="background: #eee;"></div>
+      <div id="source_pro" class="text wrapper"></div><br>
+      <div id="target" contenteditable="false" class="text-input editor" style="background: #eee;"></div>
+      <div id="target_pro" class="text wrapper"></div><br>
+      <div id="intermediate" contenteditable="false" class="text-input editor" style="background: #eee;"></div>
+      <div id="intermediate_pro" class="text wrapper"></div><br>
+      
     </div>
 
     <div class="dos-block" style="display: none;">
@@ -382,11 +405,24 @@ async function send() {
   const gpt_4o_mini = await rewrite({ "system": strings, "user": usr, "models": 'gpt-4o-mini' });
   log("🤖　" + gpt_4o_mini );
   const data = JSON.parse(gpt_4o_mini);
-  downloadJSON(data);
-  document.getElementById("intermediate").innerText = data[intermediate+"_disambiguated"];  ///field
-  document.getElementById("source").innerText = data[source+"_disambiguated"];
-  document.getElementById("target").innerText = data[target+"_disambiguated"];
-  document.getElementById("scores").innerText = JSON.stringify(data["labse"]);
+  downloadJSON(data, usr);
+  const il = data[intermediate];
+  const il_pro = data[intermediate+"_disambiguated"];  ///2 3
+  const sl = data[source];
+  const sl_pro = data[source+"_disambiguated"];  ///0 1
+  const tl = data[target];
+  const tl_pro = data[target+"_disambiguated"];  ///4 5
+
+
+
+  document.getElementById("intermediate").innerText = il;  ///field
+  document.getElementById("source").innerText = sl;
+  document.getElementById("target").innerText = tl;
+  document.getElementById("intermediate_pro").innerText = il_pro;  ///field
+  document.getElementById("source_pro").innerText = sl_pro;
+  document.getElementById("target_pro").innerText = tl_pro;
+
+  document.getElementById("scores").innerText = JSON.stringify(data["embeddings"]);  ///embeddings OR labse
 
   ///document.getElementById("input_msg").value = "";  ///20260427
   ///document.getElementById("input_msg").disabled = false;  ///20260427
@@ -404,7 +440,8 @@ document.getElementById("input_msg").addEventListener("keydown", function(e) {
  
 <!-- LOG ================================================== -->
 <script type="text/javascript">  // dialog.js
-function downloadJSON(data){
+function downloadJSON(data, inputs=""){
+  data["inputs"] = inputs;
   const blob = new Blob(
     [JSON.stringify(data, null, 2)],
     { type: "application/json" }
