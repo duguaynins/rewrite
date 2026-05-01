@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -431,7 +432,7 @@ function downloadJSON(data){
 // ========================
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({
-    pageLanguage: 'en',   // 原始語言
+    pageLanguage: navigator.language,   // 原始語言   ///navigator.language OR 'en'
     includedLanguages: '',  ///zh-TW,ja,ko,en,hi,zh-CN
     ///layout: google.translate.TranslateElement.InlineLayout.SIMPLE,  ///註解後就不會自動開始翻譯了讚讚
   }, 'google_translate_element');
