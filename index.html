@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -321,6 +322,8 @@ async function rewrite(params) {
   console.log("OUTPUT:", outputs);
   return outputs.result;///.label
 }
+
+const tag = "_SupplementaryMeaning";  ///_disambiguated
 /*
 const strings = `{
 "zh-TW":  ___,
@@ -370,11 +373,11 @@ async function send() {
   const source = navigator.language;
   const strings = `{
 "${source}":  ___,
-"${source}_disambiguated":  ___,
+"${source}${tag}":  ___,
 "${intermediate}": ___,
-"${intermediate}_disambiguated": ___,
+"${intermediate}${tag}": ___,
 "${target}": ___,
-"${target}_disambiguated": ___,} 
+"${target}${tag}": ___,} 
 `;
   ///did you have a good day today?
   console.log(strings);
@@ -407,11 +410,11 @@ async function send() {
   const data = JSON.parse(gpt_4o_mini);
   downloadJSON(data, usr);
   const il = data[intermediate];
-  const il_pro = data[intermediate+"_disambiguated"];  ///2 3
+  const il_pro = data[intermediate+tag];  ///2 3
   const sl = data[source];
-  const sl_pro = data[source+"_disambiguated"];  ///0 1
+  const sl_pro = data[source+tag];  ///0 1
   const tl = data[target];
-  const tl_pro = data[target+"_disambiguated"];  ///4 5
+  const tl_pro = data[target+tag];  ///4 5
 
 
 
@@ -422,6 +425,9 @@ async function send() {
   document.getElementById("source_pro").innerText = sl_pro;
   document.getElementById("target_pro").innerText = tl_pro;
 
+  data["embeddings"] = Object.fromEntries(
+    Object.entries(data["embeddings"]).map(([k, v]) => [k, (v * 100).toFixed(1) + "%"])
+  );
   document.getElementById("scores").innerText = JSON.stringify(data["embeddings"]);  ///embeddings OR labse
 
   ///document.getElementById("input_msg").value = "";  ///20260427
