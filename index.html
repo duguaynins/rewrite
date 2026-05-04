@@ -215,12 +215,12 @@
       <button class="btn" id="input_msgbtn" onclick="send()">[ F1 ] REWRITE</button>
       <div id="scores" class="text wrapper"></div><br><br><br>
 
-      <div id="source" contenteditable="false" class="text-input editor" style="background: #eee;"></div>
-      <div id="source_pro" class="text wrapper"></div><br>
-      <div id="target" contenteditable="false" class="text-input editor" style="background: #eee;"></div>
-      <div id="target_pro" class="text wrapper"></div><br>
-      <div id="intermediate" contenteditable="false" class="text-input editor" style="background: #eee;"></div>
-      <div id="intermediate_pro" class="text wrapper"></div><br>
+      <div id="source" contenteditable="false" class="copy text-input editor" style="background: #eee;"></div>
+      <div id="source_pro" class="copy text wrapper"></div><br>
+      <div id="target" contenteditable="false" class="copy text-input editor" style="background: #eee;"></div>
+      <div id="target_pro" class="copy text wrapper"></div><br>
+      <div id="intermediate" contenteditable="false" class="copy text-input editor" style="background: #eee;"></div>
+      <div id="intermediate_pro" class="copy text wrapper"></div><br>
       
       <input type="checkbox" id="MQM_AUTO">
     </div>
@@ -655,6 +655,26 @@ document.querySelector('#MQM_AUTO').addEventListener('change', async (event) => 
     document.querySelector('#MQM_AUTO').checked = false;  ///***
     document.querySelector('#MQM_AUTO').disabled = false;
     return; }
+});
+</script>
+
+
+<script>
+document.querySelectorAll('.copy').forEach(function(el) {
+  el.addEventListener('click', function() {
+    
+    if (!document.getElementById("input_msg").innerText) {
+      return; }
+    const text = el.innerText;
+
+    navigator.clipboard.writeText(text)/**/
+      .then(() => {
+        console.log('copy!:', text);
+      })
+      .catch(err => {
+        console.error('copy?:', err);
+      });
+  });
 });
 </script>
 
