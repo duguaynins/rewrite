@@ -211,7 +211,8 @@
       <div>
         <select id="languages" class="btn" translate="yes"></select>
       </div><br>
-      <div id="input_msg" contenteditable="true" class="text-input editor"></div><br>
+      <div id="input_msg" contenteditable="true" class="text-input editor"></div>
+      <div id="input" class="copy text wrapper"></div><br>
       <button class="btn" id="input_msgbtn" onclick="send()">[ F1 ] REWRITE</button>
       <div id="scores" class="text wrapper"></div><br><br><br>
 
@@ -444,6 +445,7 @@ async function send() {
   const tl_pro = data[target+tag];  ///4 5
 
 
+  document.getElementById("input").innerText = usr;  ///20260504
 
   document.getElementById("intermediate").innerText = il;  ///field
   document.getElementById("source").innerText = sl;
@@ -626,9 +628,10 @@ document.querySelector('#MQM_AUTO').addEventListener('change', async (event) => 
 "${intermediate}": "${document.getElementById("intermediate").innerText}",
 "${target}": "${document.getElementById("target").innerText}",} 
 `;
-  if (!document.getElementById("input_msg").innerText) {
+  if (!document.getElementById("input").innerText) {  ///20260504
     document.querySelector('#MQM_AUTO').checked = false;  ///***
     document.querySelector('#MQM_AUTO').disabled = false;
+    console.log("No Result.");
     return; }
   const gpt_4o_mini_MQM = await MQM({ "system": source, "user": notags, "models": 'gpt-4o-mini', "intermediate": document.getElementById("intermediate").innerText });
   console.log(gpt_4o_mini_MQM);
@@ -637,13 +640,16 @@ document.querySelector('#MQM_AUTO').addEventListener('change', async (event) => 
   data_mqm = mqm;
   ///downloadJSON(mqm, notags);  ///il
   
-  document.getElementById("scores").innerText += "\n";
-  document.getElementById("scores").innerText += JSON.stringify(mqm["MQM"]);  ///物件轉字串
+  // 內容溢出手機畫面
+  // 所以關閉此顯示
+  // 只在表單中使用  ///20260504
+  ///document.getElementById("scores").innerText += "\n";
+  ///document.getElementById("scores").innerText += JSON.stringify(mqm["MQM"]);  ///物件轉字串
 
   
   ///統整下載：不方便使用，因為MQM容易錯誤
   const translations = {
-    translation_inputs: document.getElementById("input_msg").innerText.trim(),
+    translation_inputs: document.getElementById("input").innerText.trim(),  ///20260504
     translation_rewrite: data_rewrite,
     translation_evaluate: data_mqm,
   };
@@ -654,19 +660,21 @@ document.querySelector('#MQM_AUTO').addEventListener('change', async (event) => 
   if (true) { 
     document.querySelector('#MQM_AUTO').checked = false;  ///***
     document.querySelector('#MQM_AUTO').disabled = false;
+    console.log("END Result.");
     return; }
 });
 </script>
 
 
 <script>
-document.querySelectorAll('.copy').forEach(function(el) {
+document.querySelectorAll('.copy').forEach(function(el) {  ///20260504
   el.addEventListener('click', function() {
     
-    if (!document.getElementById("input_msg").innerText) {
+    if (!document.getElementById("input").innerText) {
       return; }
     const text = el.innerText;
 
+    document.getElementById("input_msg").innerText = text;  ///20260504
     navigator.clipboard.writeText(text)/**/
       .then(() => {
         console.log('copy!:', text);
