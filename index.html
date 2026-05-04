@@ -223,7 +223,7 @@
       <div id="intermediate" contenteditable="false" class="copy text-input editor" style="background: #eee;"></div>
       <div id="intermediate_pro" class="copy text wrapper"></div><br>
       
-      <input type="checkbox" id="MQM_AUTO">
+      <input type="checkbox" id="MQM_AUTO" style="display: block;">
     </div>
 
     <div class="dos-block" style="display: none;">
@@ -381,7 +381,7 @@ async function init(tl="", sl="", il="") {
   document.getElementById("intermediate").innerText = "format(il): "+intermediate;  ///field
   document.getElementById("source").innerText = "source(sl): "+source;
   document.getElementById("target").innerText = "target(tl): "+target;
-  document.getElementById("scores").innerText = "";
+  ///document.getElementById("scores").innerText = "";
 }///init("en", "");  ///配合初始化的追加
 
 let data_rewrite;
@@ -395,7 +395,7 @@ async function send() {
   setTimeout(() => {
     init();
   }, 1000);
-  const intermediate = "en";  ///en, de
+  const intermediate = "en-US";  ///en, de, en-US  ///20260504  F1鎖定
   const target = document.getElementById("languages").value;
   const source = navigator.language;
   const strings = `{
@@ -425,11 +425,15 @@ async function send() {
   
   setTimeout(() => {
     init("...", "...", "...");
+    if (true) {
+      document.getElementById("input_msgbtn").disabled = true; }
   }, 1);
   setTimeout(() => {
     init();
-    if (!usr) { document.getElementById("input_msg").focus(); }
-  }, 1000);
+    if (!usr) { 
+      document.getElementById("input_msg").focus();
+      document.getElementById("input_msgbtn").disabled = false;return; }
+  }, 500);
   
   
   const gpt_4o_mini_rewrite = await rewrite({ "system": strings, "user": usr, "models": 'gpt-4o-mini' });
@@ -454,41 +458,18 @@ async function send() {
   document.getElementById("source_pro").innerText = sl_pro;
   document.getElementById("target_pro").innerText = tl_pro;
 
+
+  ///語意距離
   data["embeddings"] = Object.fromEntries(
     Object.entries(data["embeddings"]).map(([k, v]) => [k, (v * 100).toFixed(1) + "%"])
   );
   document.getElementById("scores").innerText = JSON.stringify(data["embeddings"]);  ///embeddings OR labse
 
-  ///document.getElementById("input_msg").value = "";  ///20260427
-  ///document.getElementById("input_msg").disabled = false;  ///20260427
-
-/*
-  const notags = `{
-"${source}":  "${document.getElementById("source").innerText}",
-"${intermediate}": "${document.getElementById("intermediate").innerText}",
-"${target}": "${document.getElementById("target").innerText}",} 
-`;
-  const gpt_4o_mini_MQM = await MQM({ "system": source, "user": notags, "models": 'gpt-4o-mini', "intermediate": document.getElementById("intermediate").innerText });
-  console.log(gpt_4o_mini_MQM);
-  ///const mqm = gpt_4o_mini_MQM;
-  const mqm = JSON.parse(gpt_4o_mini_MQM);  ///字串轉物件
-  ///downloadJSON(mqm, notags);  ///il
   
-  document.getElementById("scores").innerText += "\n";
-  ///document.getElementById("scores").innerText += JSON.stringify(mqm);  ///物件轉字串
-  ///document.getElementById("scores").innerText += `{"score":${mqm["MQM"]["translation_evaluation_score_percentage"]},"details":${mqm["MQM"]["translation_evaluation_MQM_error_details"]}}`;
-  
-  document.getElementById("scores").innerText += JSON.stringify(mqm["MQM"]);  ///物件轉字串
-*/
-
-  ///統整下載：不方便使用，因為MQM容易錯誤
-  /*
-  const C = {
-    translation_inputs: usr,
-    translation_rewrite: data,
-    translation_evaluate: mqm,
-  };
-  downloadJSON(C);  */
+  ///複製網址?data=
+  const backurl = "https://translate.nins.cc/?data=" + encodeURIComponent( il.replace(/ /g, "-") );
+  navigator.clipboard.writeText(backurl);
+  document.getElementById("input_msgbtn").disabled = false;
 }
 
 
@@ -684,6 +665,33 @@ document.querySelectorAll('.copy').forEach(function(el) {  ///20260504
       });
   });
 });
+</script>
+
+
+<script>
+const searchParams = new URLSearchParams(window.location.search);
+const hashParams = new URLSearchParams(window.location.hash.substring(1));
+
+const allParams = {
+  ...Object.fromEntries(searchParams.entries()),
+  ...Object.fromEntries(hashParams.entries())
+};
+
+console.log("allParams", allParams);
+if ("data" in allParams) {
+  document.getElementById("input_msg").innerText = allParams["data"];
+  
+  ///send();  ///需要等待讀取 
+  /*
+  const timer = setInterval(() => {
+    const select = document.querySelector("languages");
+    if (select && select.options.length > 0) {
+      clearInterval(timer);
+      send();
+    }
+  }, 100);  */
+}
+
 </script>
 
 
